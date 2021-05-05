@@ -1,29 +1,38 @@
 # Processing for Visual Studio Code
 
-[![.github/workflows/main.yml](https://github.com/TobiahZ/processing-vscode/workflows/.github/workflows/main.yml/badge.svg)](https://github.com/TobiahZ/processing-vscode/actions)
+[![.github/workflows/CI.yml](https://img.shields.io/github/workflow/status/Luke-zhang-04/processing-vscode/Node.js%20CI?label=CI&logo=github)](https://github.com/Luke-zhang-04/processing-vscode/actions)
 
-[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/Tobiah.language-pde.svg)](https://marketplace.visualstudio.com/items?itemName=Tobiah.language-pde)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/Tobiah.language-pde.svg)](https://marketplace.visualstudio.com/items?itemName=Tobiah.language-pde)
-[![Rating](https://vsmarketplacebadge.apphb.com/rating/Tobiah.language-pde.svg)](https://marketplace.visualstudio.com/items?itemName=Tobiah.language-pde)
+[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/Luke-zhang-04.processing-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=Luke-zhang-04.processing-vscode)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/Luke-zhang-04.processing-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=Luke-zhang-04.processing-vscode)
+[![Rating](https://vsmarketplacebadge.apphb.com/rating-star/Luke-zhang-04.processing-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=Luke-zhang-04.processing-vscode)
+
+Jump to the [Feature List](#Feature-list)
 
 ## What this extension is
 
-This is a Visual Studio Code extension created by Tobiah Zarlez to add Processing language support.
+This is a fork of a Visual Studio Code extension created by Tobiah Zarlez to add Processing language support, with added documentation on hover, diagnostics, and more.
+
+Note: You should probably uninstall the old extension as the syntax highlighting will conflict
 
 ## What this extension isn't
 
-This extension does not allow you to debug Java or Processing projects.
+This extension does not allow you to debug Java or Processing projects. It also doesn't include any sort of intellisense.
 
-### Can you add a feature I want?
+## Why the fork?
 
-Possibly! [Let us know](https://github.com/TobiahZ/processing-vscode/issues), we'd love to hear your suggestions.
+The [original extension](https://github.com/TobiahZ/processing-vscode) was missing some features that I wanted and it seemed as if the repo was no longer being maintained. So, forked the extension and changed some things.
 
-## Installation Instructions
+-   Better syntax highlighting (thanks to [Red Hat](https://github.com/redhat-developer/vscode-java/blob/master/syntaxes/java.tmLanguage.json))
+-   Documentation on hover
+-   A run button
+-   Simple diagnostics
+-   Strings are auto closing and surrounding
 
-1. Open [Visual Studio Code](https://code.visualstudio.com/)
-1. Open the Command Pallet (`CTRL+SHIFT+P` for Windows/Linux or `CMD+SHIFT+P` on Mac) enter the command “Install Extension”
-1. Search for “Processing Language” and click on this extension.
-1. Restart Visual Studio Code
+See the [CHANGELOG](https://github.com/Luke-zhang-04/processing-vscode/blob/main/CHANGELOG.md) for all changes
+
+![Hover](https://raw.githubusercontent.com/Luke-zhang-04/processing-vscode/main/media/hover-1.png)
+![Hover](https://raw.githubusercontent.com/Luke-zhang-04/processing-vscode/main/media/hover-2.png)
+![Error](https://raw.githubusercontent.com/Luke-zhang-04/processing-vscode/main/media/error.png)
 
 ## Feature list
 
@@ -35,35 +44,17 @@ Open any .pde file, or choose "Processing" from the drop down menu in the bottom
 
 Once the language has been set, you will see code snippets pop up automatically as you type!
 
+### Documentation on hover
+
+When you hover over a function such as `square`, documentation for this function will appear!
+
 ### Commands
 
 Installing this extension will add the following commands to your command pallette (`CTRL+SHIFT+P`, or opened by `View -> Command Pallette`). These commands can be selected and run from there, to complete the corresponding tasks.
 
-## Command: Create Task File
-
-Adds a `.vscode/tasks.json` file to your project folder, that has the contents of the `ProcessingTasks.json` located in the root folder of this project.
-
-When you run this task (Keyboard shortcut: `Ctrl+Shift+B`), it will compile and run your project!
-
-If you would like to see output from the compiler, comment out the line `"showOutput": "never",`
-
-**NOTE:** Processing must be added to your path, or you must set the "processing.path" setting!
-
-Follow [these instructions](#add-processing-to-path) to add Processing to your path, or these [alternate instructions](#alternate-method) instead to modify the path setting.
-
-See "[Requirements](#requirements)" for full details.
-
-## Command: Run Processing Project
-
-This is a shortcut for running the `.vscode/tasks.json` file. Same as pressing `Ctrl+Shift+B`
-
-**Note: Must have ran the "Create Processing Task File" command first, [see above](#command-create-task-file)!**
-
 ## Command: Open Extension Documentation
 
 Opens this documentation.
-
-By default uses processing.org's documentation. Can change to p5js's if preferred using the `processing.docs` setting.
 
 ## Command: Open Documentation for Selection
 
@@ -71,127 +62,27 @@ Use the pallet command "Processing: Open Documentation for Selection" to open th
 
 By default uses processing.org's documentation. Can change to p5js's if preferred using the `processing.docs` setting.
 
+## Command: Run
+
+Runs the current processing project (from current working directory). Also includes a run button in the editor menu
+
 ## Command: Search Processing Website
 
 Use the pallet command "Processing: Search Processing Website" to quickly search whatever you want on the processing website.
 
-By default uses processing.org's documentation. Can change to p5js's if preferred using the `processing.docs` setting.
-
 By default uses Google for search. Can change to DuckDuckGo if preferred using the `processing.search` setting.
 
-## Requirements
+## Proper Hover, Intellisense, and Diagnostics
 
-Installing the extension will give you instant access to [syntax highlighting](#syntax-highlighting) and [snippets](#snippets).
+Problems with the current approach:
 
-However, in order to compile and run your processing project from Visual Studio Code, you will need to do three things:
+-   Hover works with word matching, so comments show documentation on hover
+-   There's no intellsense, only the built in VSCode word matching
+-   Diagnostics rely on processing-java, which makes it very slow, and also has no option to cache the build
 
-1. Set up your `.vscode/tasks.json` file. (See: "[Command: Create Task File](#command-create-task-file)")
-1. Add Processing to your path **OR** Modify your `.vscode/tasks.json` file. (See: "[Add Processing to path](#add-processing-to-path)" or "[alternate method](#alternate-method)")
-1. Have a `<File>.pde` whose filename matches the name of the project's folder (General Processing Requirement). Your file cannot contain any spaces or it will not run correctly.
-
-## Add Processing to path
-
-In order to automatically compile and open from Visual Studio Code, I recommend adding Processing to your path.
-
-### What does that mean?
-
-That means you should be able to type the `processing` from anywhere on your machine, and it will open Processing.
-
-### How do I do that?
-
-It's easier than you might think!
-
-#### Windows
-
-* Open the "Advanced System Settings" by running sysdm.cpl
-* In the "System Properties" window, click on the Advanced tab.
-* In the "Advanced" section, click the Environment Variables button.
-* Edit the "Path" variable. Append the processing path (Example: `;C:\Program Files\Processing-3.0.1\`) to the variable value. Each entry is separated with a semicolon.
-
-#### Mac
-
-Open Processing, and click the `Tools` -> `Install "processing-java"` menu item.
-
-**Note:** You will have to install processing-java for all users for this to work
-
-#### Linux
-
-Set your `PATH` to where your processing application is located.
-
-Example: `export PATH=$PATH:/opt/processing/processing-2.0b4`
-
-You also need to create an alias for `processing-java` in `/bin/` instead of `/usr/bin/`.
-
-Example: `sudo ln -s /opt/processing/processing-java /bin/processing-java`
-
-### Then what?
-
-Once you've installed Processing to your path, you need to add the appropriate `.vscode/tasks.json` file to every Processing project.
-
-See the command "[Create Task File](#command-create-task-file)"
-
-### Alternate Method
-
-What if you cannot, or do not want to add Processing to your path?
-
-You can modify the `processing.path` setting to follow the path to wherever processing is installed on your machine. Be sure to remember to keep the `processing-java` at the end of the path!
-
-To change settings in VSCode, here is a link to the [official documentation](https://code.visualstudio.com/docs/getstarted/settings).
-
-(Remember, for Windows be sure to turn any "`\`" into "`\\`"!)
-
-Example:
-
-```json
-    "processing.path": "C:\\Program Files\\processing-3.0.1\\processing-java",
-```
-
-**NOTE:** This is untested on Mac and Linux
-
-### If needed: Overwrite default terminal
-
-You may need to also overwrite your default terminal in order to get your task file to run correctly.
-
-Following [the instructions on the official VSCode documentation](https://code.visualstudio.com/docs/editor/tasks#_common-questions), all you have to do is add a few extra lines to your task file once you generate it.
-
-For example, if you are running Windows and want the task file to use Command Prompt ('cmd.exe') you can add an 'options' parameter under the 'windows' portion:
-
-```json
-      "windows": {
-        "options": {
-            "shell": {
-                "executable": "cmd.exe",
-                "args": [
-                    "/d", "/c"
-                ]
-            }
-        },
-        "args":  [
-          "--force",
-          {
-            "value": "--sketch=${workspaceRoot}",
-            "quoting": "strong"
-          },
-          {
-            "value": "--output=${workspaceRoot}\\out",
-            "quoting": "strong"
-          },
-          "--run"
-        ]
-      }
-```
-
-## To Do List
-
-* Take nice looking (Animated?) screen shots for README/Instructions
+Despite all these problems however, this extension probably will stay this way. Why? Because there isn't nearly enough demand to make a "proper" extension that popular languages such as Python do. Making an extension like this would require me to write a parser and generate an AST, far too much work for a language that I won't really be using outside of my class, and way outside of my abilities. If someone really wants to do this, they can go ahead, I guess.
 
 ## Credits
 
-Syntax highlighting and snippets code based on the [Processing Sublime Text plugin](https://github.com/b-g/processing-sublime).
-
-## Other resources
-
-Here are some other resources I recommend:
-
-* [Processing's official site](https://processing.org/)
-* [Tobiah Zarlez Blog](http://www.TobiahZ.com)
+Snippets are based on the [Processing Sublime Text plugin](https://github.com/b-g/processing-sublime).
+Syntax highlighting is based on the [Red Hat VSCode-Java extension grammar](https://github.com/redhat-developer/vscode-java/blob/master/syntaxes/java.tmLanguage.json)

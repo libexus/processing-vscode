@@ -1,72 +1,73 @@
+/**
+ * Processing-vscode - Processing Language Support for VSCode
+ *
+ * @version 2.1.0
+ * @copyright (C) 2016 - 2020 Tobiah Zarlez, 2021 Luke Zhang
+ */
 
-let processingorgDocs = 'https://processing.org/reference/';
-let processingorgSearchGoogle = 'https://www.google.com/search?as_sitesearch=processing.org&as_q=';
-let processingorgSearchDuckDuckGo = 'https://duckduckgo.com/?q=!processing+%5C';
-let p5jsDocs = 'https://p5js.org/reference/';
-let p5jsSearchGoogle = 'https://www.google.com/search?as_sitesearch=p5js.org&as_q=';
-let p5jsSearchDuckDuckGo = 'https://duckduckgo.com/?q=!p5+';
+import {getSearchConfig} from "./getConfig"
+import vscode from "vscode"
 
-import * as vscode from 'vscode';
+const enum Urls {
+    ProcessingorgDocs = "https://processing.org/reference/",
+    ProcessingorgSearchGoogle = "https://www.google.com/search?as_sitesearch=processing.org&as_q=",
+    ProcessingorgSearchDuckDuckGo = "https://duckduckgo.com/?q=!processing+%5C",
+    P5jsDocs = "https://p5js.org/reference/",
+    P5jsSearchGoogle = "https://www.google.com/search?as_sitesearch=p5js.org&as_q=",
+    P5jsSearchDuckDuckGo = "https://duckduckgo.com/?q=!p5+",
+}
 
-export async function openURL(search_base?: string, s?: string) {
-	if (search_base === 'open') { await vscode.env.openExternal(vscode.Uri.parse(s as string)); } else {
-		const config = vscode.workspace.getConfiguration('processing');
-		let processingDocs = String(config.get('docs'));
+export const openURL = async (searchBase?: string, url?: string) => {
+    if (searchBase === "open") {
+        await vscode.env.openExternal(vscode.Uri.parse(url as string))
+    } else {
+        const {processingDocs, searchEngine} = getSearchConfig()
+        const searchUrl = ((): string => {
+            if (searchBase === "docs") {
+                if (!url) {
+                    return processingDocs === "p5js.org" ? Urls.P5jsDocs : Urls.ProcessingorgDocs
+                } else if (searchEngine === "DuckDuckGo") {
+                    return processingDocs === "p5js.org"
+                        ? `${Urls.P5jsSearchDuckDuckGo}${url}`
+                        : `${Urls.ProcessingorgSearchDuckDuckGo}${url}`
+                }
 
-		if (!s) {
-			if (processingDocs === 'p5js.org') {
-				s = p5jsDocs;
-			}
-			else {
-				s = processingorgDocs;
-			}
-		}
-		else {
-			let searchEngine = String(config.get('search'));
+                return processingDocs === "p5js.org"
+                    ? `${Urls.P5jsSearchGoogle}${url}`
+                    : `${Urls.ProcessingorgSearchGoogle}${url}`
+            }
 
-			if (searchEngine === 'DuckDuckGo') {
-				if (processingDocs === 'p5js.org') {
-					s = p5jsSearchDuckDuckGo + s;
-				}
-				else {
-					s = processingorgSearchDuckDuckGo + s;
-				}
-			}
-			else {
-				if (processingDocs === 'p5js.org') {
-					s = p5jsSearchGoogle + s;
-				}
-				else {
-					s = processingorgSearchGoogle + s;
-				}
-			}
-		}
+            return searchBase ?? ""
+        })()
 
-		await vscode.env.openExternal(vscode.Uri.parse(s));
-	}
-	return true;
+        await vscode.env.openExternal(vscode.Uri.parse(searchUrl))
+    }
+
+    return true
 }
 
 // Slice and Trim
-export function prepareInput(input: string, start: number, end: number) {
-	// input is the whole line, part of which is selected by the user (defined by star/end)
+export const prepareInput = (input: string, start: number, end: number) => {
+    // input is the whole line, part of which is selected by the user (defined by star/end)
 
-	if (start >= end) { return ''; }
+    if (start >= end) {
+        return ""
+    }
 
-	// Slice to the selection
-	input = input.slice(start, end);
+    // Slice to the selection
+    input = input.slice(start, end)
 
-	// Trim white space
-	input = input.trim();
+    // Trim white space
+    input = input.trim()
 
-	// Possible future addition:
-	// Check right here if valid variable/function name to search?
+    // Possible future addition:
+    // Check right here if valid variable/function name to search?
 
-	// Everything looks good by this point, so time to open a web browser!
-	return input;
+    // Everything looks good by this point, so time to open a web browser!
+    return input
 }
 
-export function openProcessingDocs(input: string, start: number, end: number) {
-	// Use the node module "opn" to open a web browser
-	openURL('docs', prepareInput(input, start, end));
+export const openProcessingDocs = (input: string, start: number, end: number) => {
+    // Use the node module "opn" to open a web browser
+    openURL("docs", prepareInput(input, start, end))
 }
